@@ -16,21 +16,22 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header id="app-header" className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo & Title */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
             <Volume2 className="w-5 h-5 animate-pulse" />
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold text-slate-900 leading-tight">
-                Google Cloud Text to Audio
+              <h1 className="text-sm sm:text-lg font-bold text-slate-900 leading-tight truncate">
+                <span className="xs:hidden">Google Cloud TTS</span>
+                <span className="hidden xs:inline">Google Cloud Text to Audio</span>
               </h1>
-              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/60">
+              <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/60 shrink-0">
                 <Sparkles className="w-3 h-3 text-blue-600" />
                 Neural2 & WaveNet
               </span>
             </div>
-            <p className="text-xs text-slate-700 hidden sm:block">
+            <p className="text-xs text-slate-700 hidden sm:block truncate">
               Sintesis Suara Natural AI, Kustomisasi Nada & Unduhan MP3 Cepat
             </p>
           </div>

@@ -69,27 +69,30 @@ export const VoiceCustomization: React.FC<VoiceCustomizationProps> = ({
 
       {/* Expressive Presets Quick Selector */}
       <div className="mb-6">
-        <div className="flex items-center gap-1.5 mb-2.5">
-          <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-            Gaya Bicara Cepat (Presets)
-          </span>
+        <div className="flex items-center justify-between gap-1.5 mb-2.5">
+          <div className="flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Gaya Bicara Cepat (Presets)
+            </span>
+          </div>
+          <span className="text-[11px] text-slate-400 sm:hidden">Geser samping →</span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+        <div className="flex overflow-x-auto pb-2 sm:pb-0 gap-2 sm:grid sm:grid-cols-3 lg:grid-cols-6 scrollbar-thin">
           {EXPRESSIVE_PRESETS.map((preset) => (
             <button
               key={preset.id}
               type="button"
               onClick={() => onApplyPreset(preset)}
-              className="flex flex-col items-start p-2.5 rounded-xl border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/40 text-left transition-all group"
+              className="flex-shrink-0 w-36 sm:w-auto flex flex-col items-start p-3 rounded-xl border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/40 text-left transition-all group active:scale-95 cursor-pointer"
             >
-              <div className="flex items-center gap-1.5 mb-1">
+              <div className="flex items-center gap-1.5 mb-1 w-full">
                 {renderPresetIcon(preset.iconName)}
                 <span className="text-xs font-bold text-slate-800 group-hover:text-emerald-800 truncate">
                   {preset.name}
                 </span>
               </div>
-              <span className="text-[10px] text-slate-600 font-mono">
+              <span className="text-[11px] text-slate-600 font-mono">
                 {preset.speakingRate}x • {preset.pitch > 0 ? `+${preset.pitch}` : preset.pitch}st
               </span>
             </button>

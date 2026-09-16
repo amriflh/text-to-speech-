@@ -149,17 +149,20 @@ export const TextInputCard: React.FC<TextInputCardProps> = ({
 
       {/* Sample Templates Quick-Bar */}
       <div className="mt-4 pt-3 border-t border-slate-100">
-        <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span className="text-xs font-semibold text-slate-700">Contoh Naskah Siap Pakai:</span>
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span className="text-xs font-semibold text-slate-700">Contoh Naskah Siap Pakai:</span>
+          </div>
+          <span className="text-[11px] text-slate-400 sm:hidden">Geser →</span>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {relevantTemplates.slice(0, 4).map((template) => (
+        <div className="flex overflow-x-auto pb-2 sm:pb-0 gap-2 sm:flex-wrap scrollbar-thin">
+          {relevantTemplates.slice(0, 5).map((template) => (
             <button
               key={template.id}
               type="button"
               onClick={() => onSelectTemplate(template)}
-              className="px-2.5 py-1 text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 rounded-lg border border-slate-200/80 transition-all hover:border-blue-200 text-left font-medium"
+              className="flex-shrink-0 px-3 py-1.5 text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 rounded-lg border border-slate-200/80 transition-all hover:border-blue-300 text-left font-medium active:scale-95 cursor-pointer"
             >
               {template.title}
             </button>
