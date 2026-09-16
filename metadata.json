@@ -1,0 +1,6 @@
+{
+  "name": "Google Cloud Text to Audio",
+  "description": "Aplikasi konversi teks ke audio berkualitas tinggi dengan suara natural Google Cloud TTS, multi-bahasa, pengaturan nada & kecepatan, unduhan MP3 instan, dan riwayat konversi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
