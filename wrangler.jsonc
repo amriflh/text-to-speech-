@@ -2,7 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "google-cloud-text-to-audio",
   "compatibility_date": "2025-01-01",
-  "pages_build_output_dir": "./dist",
+  "build": {
+    "command": "bun run build || npm run build"
+  },
   "observability": {
     "enabled": true
   },
