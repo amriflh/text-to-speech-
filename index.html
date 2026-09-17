@@ -1,6 +1,31 @@
 <!doctype html>
 <html lang="id">
   <head>
+    <script>
+      (function() {
+        var origError = console.error;
+        var origWarn = console.warn;
+        function isBenignVite(arg) {
+          if (!arg) return false;
+          var str = typeof arg === 'string' ? arg : (arg.message || String(arg));
+          return str.indexOf('[vite]') !== -1 || str.indexOf('websocket') !== -1;
+        }
+        console.error = function() {
+          if (arguments.length > 0 && isBenignVite(arguments[0])) return;
+          return origError.apply(console, arguments);
+        };
+        console.warn = function() {
+          if (arguments.length > 0 && isBenignVite(arguments[0])) return;
+          return origWarn.apply(console, arguments);
+        };
+        window.addEventListener('error', function(e) {
+          if (e && e.message && (e.message.indexOf('[vite]') !== -1 || e.message.indexOf('websocket') !== -1)) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+          }
+        }, true);
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Google Cloud Text to Audio</title>
