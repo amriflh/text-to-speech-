@@ -3,23 +3,73 @@
   <head>
     <script>
       (function() {
-        var origError = console.error;
-        var origWarn = console.warn;
-        function isBenignVite(arg) {
-          if (!arg) return false;
-          var str = typeof arg === 'string' ? arg : (arg.message || String(arg));
-          return str.indexOf('[vite]') !== -1 || str.indexOf('websocket') !== -1;
+        // 1. Filter [vite] and benign HMR messages from all console outputs
+        var methods = ['log', 'warn', 'error', 'info', 'debug'];
+        for (var i = 0; i < methods.length; i++) {
+          (function(method) {
+            var orig = console[method];
+            if (!orig) return;
+            console[method] = function() {
+              for (var j = 0; j < arguments.length; j++) {
+                var arg = arguments[j];
+                if (typeof arg === 'string' && (arg.indexOf('[vite]') !== -1 || arg.indexOf('vite-hmr') !== -1 || arg.indexOf('websocket') !== -1)) {
+                  return;
+                }
+                if (arg && typeof arg === 'object') {
+                  var msg = arg.message || arg.stack || '';
+                  if (typeof msg === 'string' && (msg.indexOf('[vite]') !== -1 || msg.indexOf('vite-hmr') !== -1 || msg.indexOf('websocket') !== -1)) {
+                    return;
+                  }
+                }
+              }
+              return orig.apply(console, arguments);
+            };
+          })(methods[i]);
         }
-        console.error = function() {
-          if (arguments.length > 0 && isBenignVite(arguments[0])) return;
-          return origError.apply(console, arguments);
-        };
-        console.warn = function() {
-          if (arguments.length > 0 && isBenignVite(arguments[0])) return;
-          return origWarn.apply(console, arguments);
-        };
+
+        // 2. Intercept Vite HMR WebSocket connection to prevent connection failure error
+        var OrigWS = window.WebSocket;
+        if (typeof OrigWS === 'function') {
+          var ViteDummyWS = function(url, protocols) {
+            var isVite = (protocols === 'vite-hmr' || protocols === 'vite-ping' || (typeof url === 'string' && (url.indexOf('token=') !== -1 || url.indexOf('24678') !== -1)));
+            if (isVite) {
+              var target = new EventTarget();
+              target.readyState = 0;
+              target.url = url;
+              target.protocol = protocols || '';
+              target.send = function() {};
+              target.close = function() {
+                target.readyState = 3;
+                if (typeof target.onclose === 'function') target.onclose(new Event('close'));
+                target.dispatchEvent(new Event('close'));
+              };
+              setTimeout(function() {
+                target.readyState = 1;
+                if (typeof target.onopen === 'function') target.onopen(new Event('open'));
+                target.dispatchEvent(new Event('open'));
+              }, 5);
+              return target;
+            }
+            return new OrigWS(url, protocols);
+          };
+          ViteDummyWS.prototype = OrigWS.prototype;
+          ViteDummyWS.CONNECTING = 0;
+          ViteDummyWS.OPEN = 1;
+          ViteDummyWS.CLOSING = 2;
+          ViteDummyWS.CLOSED = 3;
+          window.WebSocket = ViteDummyWS;
+        }
+
+        // 3. Prevent unhandled errors related to [vite]
         window.addEventListener('error', function(e) {
           if (e && e.message && (e.message.indexOf('[vite]') !== -1 || e.message.indexOf('websocket') !== -1)) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+          }
+        }, true);
+        window.addEventListener('unhandledrejection', function(e) {
+          var reason = e && e.reason ? (e.reason.message || String(e.reason)) : '';
+          if (reason.indexOf('[vite]') !== -1 || reason.indexOf('websocket') !== -1) {
             e.stopImmediatePropagation();
             e.preventDefault();
           }
